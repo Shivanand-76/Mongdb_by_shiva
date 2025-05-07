@@ -1,0 +1,12 @@
+{
+    "username":"shiva",
+    "salary":35000,
+    "skills":["Mongodb","java"],
+    "isnullvalue":null,
+    "isDate":"2025-05-07",
+    "deatails":{
+        "firstName":"Shivanand",
+        "lastName":"Birjdar"
+    }
+}
+
