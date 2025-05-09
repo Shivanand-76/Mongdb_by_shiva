@@ -106,5 +106,7 @@ var arr = ["shiva", true, 10, null, ["HTML", "Mongodb"]] //? arrays
 //     "number_1": 10,
 //     "number_2": -10,
 //     "number_3":10.4,
-//     "number_4":1.0E+2        
+//     "number_4":1.0E+2
 // }
+
+//! mongodb installation
