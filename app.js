@@ -282,6 +282,9 @@
 //? db.createCollection() is a MongoDB shell command used to explicitly create a new collection
 //? within the current database.
 
+//! creating the collection by  implicit way and insert data:
+//? db.collectionName.insertOne({key:"value"})
+
 //* syntax: db.createCollection(name, options)
 //? name (string) – Required. Name of the collection to create.
 //? options (object) – Optional. Configuration settings for the collection.
@@ -292,9 +295,27 @@
 // 4. validator	    Enforce document structure
 // 5.storageEngine	Configure storage engine at collection level
 
+//! Capped collection
+//?A capped collection in MongoDB is a fixed-size collection that automatically overwrites the oldest documents when it reaches its capacity
+//? while creating a collection the user must specify the the collection maximum size in bytes and
+//? the maximum number of documents that to be stored.
+//? A capped collection is a fixed-size, circular collection in MongoDB that:
+//? Preserves insertion order (like a queue).
+//? Automatically overwrites the oldest documents when it reaches its size limit.
+//? Is ideal for logging, caching, or real-time data.
+
+//! How to create capped colleciton
+//? step1: create database :: use db_name
+//? step2: create collection :: db_name.createCollection("collection_name", {})
+
+//! to check collection is capped or not
+//? In MongoDB, db.collectionName.isCapped() is a method used to determine if a specified collection is
+//? a capped collection.
+//? Capped collections are fixed - size collections that automatically overwrite the oldest documents when they reach their capacity, maintaining insertion order.
+
 //* Example: db.createCollection("students")
 
-//! show collections:
+//! show collections or show tables:
 //? It will return a list of all the collections in the current database
 //? check the collections is created or not.
 
@@ -307,3 +328,283 @@
 //* syntax: db.DATABASE_NAME.dropDatabase()
 
 //* Example: db.mysqlTrainers.dropDatabase()
+
+//! document:
+
+//?A document is a JSON-like object stored in a collection.
+//?In MongoDB, it's actually stored in a BSON format (Binary JSON), which supports additional
+//?data types like Date, ObjectId, etc.
+//? It contains key-value pairs, where:
+//* Key = field name (like a column)
+//* Value = can be string, number, array, object, boolean, etc.
+
+//? Every document must have a unique _id field.
+//?Documents in the same collection don’t have to follow the same schema.
+//?Documents can be nested (objects inside objects).
+//?MongoDB is schema-less, so you can store flexible and dynamic data.
+
+//! insert field in collection :
+//!db.collection.insertOne({}):
+//? db.collection.insertOne() inserts a single document into a collection.
+//? It accepts json or javascript object as argument.
+//? If the document does not specify an _id field, MongoDB adds the _id field with an ObjectId
+//? value to the new document.
+
+//! insert many documents in collection:
+//!db.collectionName.insertMany():
+//? The db.collection.insertMany() method in MongoDB is used to insert multiple documents into a collection.
+//? It accepts an array of documents and inserts them in a single operation, making it efficient for batch inserts.
+
+//? example:
+// [
+//     {
+//         name: "shiva",
+//         course: "Reactjs",
+//         duration: "1 month",
+//         fees:"4000"
+//     },
+//     {
+//         name: "shubham",
+//         course: "web development",
+//         duration: "2 month",
+//         fees:"15000"
+//     },
+//     {
+//         name: "ritesh",
+//         course: "java",
+//         duration: "3 month",
+//         fees:"16000"
+//     }
+// ]
+
+//!find() method:
+//* syntax:db.collection.find(query, projection, options)
+//? The find() method in MongoDB selects documents in a collection or view and returns a
+//? cursor to the selected documents.
+//? It has two parameters: query and projection and options
+
+//* Note:If you don’t specify a query, MongoDB returns all documents in the collection.
+
+//!  Nested object query
+//  db.collectionName.find({key:value})
+//? example:
+// db.users.find({"address.zipcode":"12926-3874"})
+
+//! findOne():
+//? The findOne() method in MongoDB is used to retrieve a single document from a collection
+//? that matches specified query criteria.
+
+//* syntax:db.collection.findOne(<query>, <projection>)
+
+//* <query>:
+//? This is an optional document that specifies the selection criteria or filter for the documents.
+//? Only documents that match this criteria will be considered.
+//? If omitted or an empty document({}) is provided, findOne() will return the first document
+//? In the collection according to its natural order(insertion order for capped collections).
+
+//* <projection>:
+//? </projection>This is an optional document that specifies the fields to be included or excluded in the returned document.
+//? </projection>To include specific fields, set their value to 1 or true.
+//? </projection>To exclude specific fields, set their value to 0 or false.
+//? </projection>The _id field is included by default unless explicitly excluded.
+//? </projection>You cannot combine inclusion and exclusion of fields in the same projection, except for the _id field.
+
+//! Note:
+//? 1. If multiple documents satisfy the query criteria, findOne() returns the first
+//?     document found according to the natural order.
+//? 2. If no document satisfies the query, the method returns null.
+//? 3. Unlike the find() method, findOne() returns a document directly, not a cursor.
+
+//! MongoDB ObjectId:
+//? Every document in the collection has an "_id" field that is used to uniquely identify the
+//? document in a particular collection it acts as the primary key for the documents in the
+//? collection.
+//? The "_id" field can be used in any format and the default format is the ObjectId of the document
+//? The ObjectId is a 12-byte BSON type that guarantees uniqueness across different machines and
+//? processes, which is essential for distributed systems.It is generated in such a way that
+//? ensures no collisions across different databases or servers.
+
+//! Key Characteristics of ObjectId
+//* 1.Uniqueness: ObjectId ensures that every document in a collection has a unique identifier,
+//*               even across multiple MongoDB instances and servers.
+//* 2.Timestamp:  The ObjectId includes a timestamp, allowing you to retrieve the creation time of
+//*               the document.
+//* 3.Efficiency: ObjectId generation is efficient and does not require coordination between
+//*               servers, making it ideal for distributed systems.
+
+//!The ObjectId is composed of 12 bytes, broken down as follows:
+
+//? The first 4 bytes represent the Unix Timestamp of the document.
+//? The next 3 bytes are the machine ID on which the MongoDB server is running.
+//? The next 2 bytes are of the process ID.
+//? The last Field is 3 bytes used for incrementing the objectid
+
+//!The ObjectId is represented as a hexadecimal string, and its default format is:
+//?  ObjectId(<hexadecimal>)
+//* Note:  ObjectId accepts one parameter which is optional Hexadecimal ObjectId in String.
+//*        We can give our own ObjectId to the document but it must be unique.
+//*        2. if you are adding the duplicate objectID it will show error duplicate key
+
+//! getCollection():
+//? In MongoDB, the db.getCollection() method is used to access a specific collection within
+//? the current database.
+
+//? The object returned by db.getCollection() provides access to all standard collection methods,
+//? such as insertOne(), find(), updateMany(), deleteMany(), etc.
+
+//* syntax:db.getCollection("collectionName")
+//? Here, collectionName is a string representing the name of the collection you wish to access
+
+//?To access a collection named _my_data that might otherwise conflict with shell behavior,
+//? you would use
+//todo : example
+//  db.getCollection("_my_data").find({})
+
+//! Revision of all topics:
+
+//! How to check db version:
+//? db.version()
+
+//! How to check active database
+//? database or db
+
+//! How to check all databases
+//? show db or show databases
+
+//! How to crate database
+//? use database
+//todo: use punjagutta
+
+//! How to create new Collection
+//? db.createCollection("collectionName")
+//todo:  db.createCollection("trainers")
+
+//! How to create capped collection
+//? db.createCollection("CollectionName",{capped:true,size:1000,max:4,autoIndexId:true})
+
+//! How to check is collection is capped or not
+//? db.collection.isCapped()
+
+//! How insert document in collection
+//? db.collection.insertOne()
+//todo: db.trainers.insertOne({name:"Shiva"})
+
+//! How insert multiple document in collection
+//? db.collection.insertMany() or  db.collection.insert()
+//todo:db.trainers.insertMany([{},{}])
+
+//! How to get the collection
+//? db.getCollection("collectionName")
+
+// var docs = []
+// for (let i = 101; i<151; i++) {
+//     let obj = {
+//        id:`TYP${i}`
+//    }
+//    docs.push(obj)
+// }
+// db.onlytest.insertMany(docs)
+
+//! How to see all document of collection
+//? db.collection.find()
+
+//! How to find the single document of collection
+//? db.collection.findOne()
+
+//! How to find with query
+//? db.collection.findOne({key:value})
+
+//todo : download == Studio 3T Community
+
+//! CRUD
+//? create || read || update || delete
+
+//! create data
+// db.employees.insertMany([
+//   {
+//     name: "Shiva",
+//     eduction: "BTECH",
+//     salary: "500000",
+//     experience: "2 years",
+//     skills: ["HTML", "CSS", "Javascript"],
+//     address: {
+//       city: "Pune",
+//       state: "MH",
+//     },
+//   },
+//   {
+//     name: "Nikhil",
+//     eduction: "BTECH",
+//     salary: "550000",
+//     address: {
+//       city: "Bangalore",
+//       state: "KA",
+//     },
+//     experience: "2 years",
+//     skills: ["HTML", "CSS", "Javascript"],
+//   },
+// ]);
+
+//! Read data
+//? db.employees.find()
+
+//! update data in document
+//? update only one document
+//? db.collection.updateOne(<filter>,<update>,<option>)
+
+//*  Note: 1. to update document we requires atomic operator $set
+//*        2. $set is update operator and it also called as atomic operator
+
+//todo:example: db.employees.updateOne({name:"Shiva"},{$set:{experience: "3 years",salary: "650000",lastupdated:new Date()}})
+
+//! $set Operator:
+//? In MongoDB, the $set operator is a fundamental update operator used to modify documents within
+//? a collection.
+//? It allows for the addition of new fields or the modification of existing fields in a document
+
+//! Key features and usage of the $set operator:
+//? 1. Adds new fields:
+//? - If a specified field does not exist in a document, $set will create it and assign
+//?   the provided value.
+//? 2. Updates existing fields:
+//? - If the field already exists, $set will replace its current value with the new value
+//?   specified in the operation.
+//? 3.Preserves other fields:
+//? - The $set operation only affects the fields explicitly mentioned in the $set expression,
+//?   leaving all other fields in the document unchanged.This makes it suitable for incremental
+//?   updates.
+//? 4.Supports nested fields:
+//? - $set can be used to update or add fields within embedded documents or
+//?   using dot notation (e.g., address.city).
+
+//! Note: All the operators will start with $ symbol.
+
+//! upsert method
+//?In MongoDB, an "upsert" operation combines an update and an insert operation into a single,
+//? atomic action.It allows you to:
+//? 1.Update: an existing document if it matches a specified query filter.
+//? 2.Insert: a new document if no document matches the query filter.
+
+//? The upsert option is a boolean value that can be set to true in update operations like
+//? updateOne() or updateMany()
+
+//? If upsert: true is set and a document matching the query filter is found, that document
+//?            is updated according to the specified update operators(e.g., $set, $inc).
+
+//? If upsert: true is set and no document matches the query filter, a new document is inserted.
+//?            This new document will include the fields specified in the query filter and any
+//?            fields provided in the update operation(e.g., within $set).
+
+//? by default upsert is false
+//* syntax: db.collectionName.updateOne(<filter>,<update>,{upsert:true})
+
+//? db.employees.updateOne({empid:"type5"}, {$set{duration:"3 months"}},{upsert:true})
+
+
+// let serverResponse = {
+//     "Content-Type": "application/json",
+//     "Content-lan":"US-en"
+// }
+
+//! timeStamp with updateOne
+db.employees.updateOne({name: 'Shiva'},{$set:{compaines:["Cyperts","Testyantra"]}},{$currentDate:{lastmodifed:true}},{upsert:true}) 
